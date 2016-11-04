@@ -1,4 +1,5 @@
 # SpotifySearch Web API
+[ ![Codeship Status for Lemon555/SpotifySearch_API](https://codeship.com/projects/1ef7fba0-846f-0134-4b73-22876e02b99f/status?branch=master)](https://codeship.com/projects/183152)
 API to check for feeds and information on public Facebook Groups
 
 ## Routes
