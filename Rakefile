@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rake/testtask'
 
 task :default do
@@ -23,11 +24,11 @@ namespace :quality do
   task all: [:rubocop, :flog, :flay]
 
   task :flog do
-    sh "#{CODE}"
+    sh "flog #{CODE}"
   end
 
   task :flay do
-    sh "#{CODE}"
+    sh "flay #{CODE}"
   end
 
   task :rubocop do

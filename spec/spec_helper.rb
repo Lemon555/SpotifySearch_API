@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ENV['RACK_ENV'] = 'test'
 
 require 'minitest/autorun'
@@ -16,7 +17,7 @@ end
 
 FIXTURES_FOLDER = 'spec/fixtures'
 CASSETTES_FOLDER = "#{FIXTURES_FOLDER}/cassettes"
-GROUPS_CASSETTE = 'groups' #remember to change the string
+CASSETTE_FILE = 'spotifysearch_api'
 
 VCR.configure do |c|
   c.cassette_library_dir = CASSETTES_FOLDER

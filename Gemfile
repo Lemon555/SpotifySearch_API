@@ -1,11 +1,11 @@
+# frozen_string_literal: true
 source 'https://rubygems.org'
 
 gem 'sinatra'
 gem 'puma'
 gem 'json'
-gem 'econfig'
-
-gem 'facegroup'
+gem 'rack', '<2.0'
+gem 'spotifysearch'
 
 group :develop, :test do
   gem 'pry-byebug'

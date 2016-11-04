@@ -4,19 +4,23 @@ require 'spotifysearch'
 
 # GroupAPI web service
 class SpotifySearchAPI < Sinatra::Base
-  API_VER = 'api/v0.1'.freeze
+  API_VER = 'api/v0.1'
 
   get '/?' do
     "SpotifySearchAPI latest version endpoints are at: /#{API_VER}/"
   end
 
-  get "/#{API_VER}/song/:song_name/?" do
+  get "/#{API_VER}/tracks/:song_name/?" do
     track_name = params[:song_name]
     begin
-      search = Spotify::Search.find(id: track_name)
+      search = Spotify::Search.find(track_name)
+      song_hash = {}
+      search.each do |key, song|
+        song_hash[song.track_name] = key
+      end
 
       content_type 'application/json'
-      { result: search }.to_json
+      { result: song_hash }.to_json
     rescue
       halt 404, "No (id: #{track_name}) found on Spotify"
     end
@@ -25,9 +29,9 @@ class SpotifySearchAPI < Sinatra::Base
   get "/#{API_VER}/artists/:song_name/?" do
     track_name = params[:song_name]
     begin
-      search = Spotify::Search.find(id: track_name)
+      search = Spotify::Search.find(track_name)
       artist_hash = {}
-      search.each do |song|
+      search.each do |_, song|
         artist_hash[song.track_name] = song.artist_name
       end
 
@@ -41,9 +45,9 @@ class SpotifySearchAPI < Sinatra::Base
   get "/#{API_VER}/albums/:song_name/?" do
     track_name = params[:song_name]
     begin
-      search = Spotify::Search.find(id: track_name)
+      search = Spotify::Search.find(track_name)
       album_hash = {}
-      search.each do |song|
+      search.each do |_, song|
         album_hash[song.track_name] = song.album_name
       end
 
@@ -57,9 +61,9 @@ class SpotifySearchAPI < Sinatra::Base
   get "/#{API_VER}/links/:song_name/?" do
     track_name = params[:song_name]
     begin
-      search = Spotify::Search.find(id: track_name)
+      search = Spotify::Search.find(track_name)
       link_hash = {}
-      search.each do |song|
+      search.each do |_, song|
         link_hash[song.track_name] = song.track_link
       end
 
@@ -73,9 +77,9 @@ class SpotifySearchAPI < Sinatra::Base
   get "/#{API_VER}/images/:song_name/?" do
     track_name = params[:song_name]
     begin
-      search = Spotify::Search.find(id: track_name)
+      search = Spotify::Search.find(track_name)
       image_hash = {}
-      search.each do |song|
+      search.each do |_, song|
         image_hash[song.track_name] = song.imgs
       end
 
