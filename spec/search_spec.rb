@@ -4,6 +4,7 @@ require_relative 'spec_helper'
 describe 'card specifications' do
   SAD_SEARCH_INPUT = 'sdfghjk'
   HAPPY_SEARCH_INPUT = 'Eyes+Shut'
+  type = ''
 
   before do
     VCR.insert_cassette CASSETTE_FILE, record: :new_episodes
@@ -14,8 +15,17 @@ describe 'card specifications' do
 
   describe 'Do a search' do
     it 'HAPPY: should find hash of album given a track name' do
-      get "api/v0.1/tracks/#{HAPPY_SEARCH_INPUT}"
+      type = 'tracks'
+      get "api/v0.1/#{type}/#{HAPPY_SEARCH_INPUT}"
+      last_response.status.must_equal 200
+      last_response.content_type.must_equal 'application/json'
+      search_data = JSON.parse(last_response.body)
+      search_data['tracks'].is_a?(Hash)
+    end
 
+    it 'HAPPY: should find hash of album given a track name' do
+      type = 'albums'
+      get "api/v0.1/#{type}/#{HAPPY_SEARCH_INPUT}"
       last_response.status.must_equal 200
       last_response.content_type.must_equal 'application/json'
       search_data = JSON.parse(last_response.body)
@@ -23,7 +33,8 @@ describe 'card specifications' do
     end
 
     it 'HAPPY: should find hash of artists given a track name' do
-      get "api/v0.1/artists/#{HAPPY_SEARCH_INPUT}"
+      type = 'artists'
+      get "api/v0.1/#{type}/#{HAPPY_SEARCH_INPUT}"
 
       last_response.status.must_equal 200
       last_response.content_type.must_equal 'application/json'
@@ -32,7 +43,8 @@ describe 'card specifications' do
     end
 
     it 'HAPPY: should find hash of links given a track name' do
-      get "api/v0.1/links/#{HAPPY_SEARCH_INPUT}"
+      type = 'links'
+      get "api/v0.1/#{type}/#{HAPPY_SEARCH_INPUT}"
 
       last_response.status.must_equal 200
       last_response.content_type.must_equal 'application/json'
@@ -41,7 +53,8 @@ describe 'card specifications' do
     end
 
     it 'HAPPY: should find hash of images given a track name' do
-      get "api/v0.1/images/#{HAPPY_SEARCH_INPUT}"
+      type = 'images'
+      get "api/v0.1/#{type}/#{HAPPY_SEARCH_INPUT}"
 
       last_response.status.must_equal 200
       last_response.content_type.must_equal 'application/json'
@@ -50,7 +63,8 @@ describe 'card specifications' do
     end
 
     it 'SAD: should report if no albums are found' do
-      get "api/v0.1/tracks/#{SAD_SEARCH_INPUT}"
+      type = 'tracks'
+      get "api/v0.1/#{type}/#{SAD_SEARCH_INPUT}"
       search_data = JSON.parse(last_response.body)
       search_data['albums'].is_a?(NilClass)
     end
