@@ -27,34 +27,16 @@ class SpotifySearchAPI < Sinatra::Base
   end
 
   def type_of_result(search_type, search)
-    search_hash = {}
-    case search_type
+    pick_search = {
+      'tracks' => ->(key, _) { key },
+      'artists' => ->(_, song) { song.artist_name },
+      'albums' => ->(_, song) { song.album_name },
+      'links' => ->(_, song) { song.track_link },
+      'images' => ->(_, song) { song.imgs }
+    }
 
-    when 'tracks' then
-      search.each do |key, song|
-        search_hash[song.track_name] = key
-      end
-      search_hash
-    when 'artists' then
-      search.each do |_, song|
-        search_hash[song.track_name] = song.artist_name
-      end
-      search_hash
-    when 'albums' then
-      search.each do |_, song|
-        search_hash[song.track_name] = song.album_name
-      end
-      search_hash
-    when 'links' then
-      search.each do |_, song|
-        search_hash[song.track_name] = song.track_link
-      end
-      search_hash
-    when 'images' then
-      search.each do |_, song|
-        search_hash[song.track_name] = song.imgs
-      end
-      search_hash
-    end
+    search.map do |key, song|
+      [song.track_name, pick_search[search_type].call(key, song)]
+    end.to_h
   end
 end
