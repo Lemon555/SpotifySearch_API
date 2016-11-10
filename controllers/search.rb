@@ -22,7 +22,36 @@ class SpotifySearchAPI < Sinatra::Base
       content_type 'application/json'
       result_arr.to_json
     rescue
-      halt 404, "No (id: #{track_name}) found on Spotify"
+      halt 404, "No (#{track_name}) found on Spotify"
+    end
+  end
+
+  put "/#{API_VER}/:song_name/?" do
+    begin
+      track_name = params[:song_name]
+      search = Search.find(track_name)
+      halt 400, "Search (#{track_name}) is not stored" unless search
+      updated_search = Spotify::Search.find(track_name)
+      dbsongs = search.songs
+      if updated_search.length == dbsongs.length
+        'All songs updated!'
+      else
+        updated_search.each do |key, track|
+          next unless Song.find(key).nil?
+          Song.create(
+            track_id: key,
+            search_id: search.id,
+            track_name: track.track_name,
+            link: track.track_link,
+            album: track.album_name,
+            artists: track.artist_name,
+            images: track.imgs
+          )
+        end
+      end
+    rescue
+      content_type 'text/plain'
+      halt 500, "Song (#{track_name}) could not be processed"
     end
   end
 end
