@@ -5,6 +5,10 @@ class SpotifySearchAPI < Sinatra::Base
   post "/#{API_VER}/:song_name/?" do
     track_name = params[:song_name]
 
+    if Group.find(input: track_name)
+      halt 422, "Search (input: #{track_name})already exists"
+    end
+
     begin
       search = Spotify::Search.find(track_name)
 
@@ -26,7 +30,6 @@ class SpotifySearchAPI < Sinatra::Base
           album: track.album_name,
           artists: track.artist_name,
           images: track.imgs
-          updated_time:
         )
       end
   end

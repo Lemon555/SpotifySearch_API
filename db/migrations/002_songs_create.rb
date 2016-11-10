@@ -12,7 +12,6 @@ Sequel.migration do
       String :album
       String :link
       String :images
-      String :updated_time
     end
   end
 end
