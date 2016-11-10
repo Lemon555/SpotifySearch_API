@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'sinatra'
 require 'econfig'
-require 'facegroup'
+require 'spotifysearch'
 
 require_relative 'base'
 
