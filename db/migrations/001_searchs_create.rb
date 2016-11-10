@@ -3,8 +3,8 @@ require 'sequel'
 
 Sequel.migration do
   change do
-    create_table(:searches) do
-      primary_key :search_id
+    create_table(:searchs) do
+      primary_key :id
       String :input
     end
   end
