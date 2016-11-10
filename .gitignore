@@ -3,3 +3,4 @@ coverage/
 spec/fixtures/
 spec/coverage/
 spec/fixtures/cassettes
+db/*.*
