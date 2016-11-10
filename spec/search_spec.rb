@@ -20,7 +20,7 @@ describe 'card specifications' do
       last_response.status.must_equal 200
       last_response.content_type.must_equal 'application/json'
       search_data = JSON.parse(last_response.body)
-      search_data['tracks'].is_a?(Hash)
+      search_data['tracks'].length.must_be :>, 0
     end
 
     it 'HAPPY: should find hash of album given a track name' do
@@ -29,7 +29,7 @@ describe 'card specifications' do
       last_response.status.must_equal 200
       last_response.content_type.must_equal 'application/json'
       search_data = JSON.parse(last_response.body)
-      search_data['albums'].is_a?(Hash)
+      search_data['albums'].length.must_be :>, 0
     end
 
     it 'HAPPY: should find hash of artists given a track name' do
@@ -39,7 +39,7 @@ describe 'card specifications' do
       last_response.status.must_equal 200
       last_response.content_type.must_equal 'application/json'
       search_data = JSON.parse(last_response.body)
-      search_data['artists'].is_a?(Hash)
+      search_data['artists'].length.must_be :>, 0
     end
 
     it 'HAPPY: should find hash of links given a track name' do
@@ -49,7 +49,7 @@ describe 'card specifications' do
       last_response.status.must_equal 200
       last_response.content_type.must_equal 'application/json'
       search_data = JSON.parse(last_response.body)
-      search_data['links'].is_a?(Hash)
+      search_data['links'].length.must_be :>, 0
     end
 
     it 'HAPPY: should find hash of images given a track name' do
@@ -59,7 +59,7 @@ describe 'card specifications' do
       last_response.status.must_equal 200
       last_response.content_type.must_equal 'application/json'
       search_data = JSON.parse(last_response.body)
-      search_data['images'].is_a?(Hash)
+      search_data['images'].length.must_be :>, 0
     end
 
     it 'SAD: should report if no albums are found' do
