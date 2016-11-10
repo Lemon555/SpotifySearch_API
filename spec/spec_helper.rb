@@ -7,6 +7,7 @@ require 'rack/test'
 require 'vcr'
 require 'webmock'
 
+require './init.rb'
 require_relative '../app'
 
 include Rack::Test::Methods
@@ -23,3 +24,6 @@ VCR.configure do |c|
   c.cassette_library_dir = CASSETTES_FOLDER
   c.hook_into :webmock
 end
+
+SAD_SEARCH_INPUT = 'sdfghjk'
+HAPPY_SEARCH_INPUT = 'Eyes+Shut'

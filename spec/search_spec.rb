@@ -1,72 +1,76 @@
 # frozen_string_literal: true
 require_relative 'spec_helper'
 
-describe 'card specifications' do
-  SAD_SEARCH_INPUT = 'sdfghjk'
-  HAPPY_SEARCH_INPUT = 'Eyes+Shut'
-  type = ''
-
+describe 'search specifications' do
   before do
     VCR.insert_cassette CASSETTE_FILE, record: :new_episodes
   end
+
   after do
     VCR.eject_cassette
   end
 
-  describe 'Do a search' do
-    it 'HAPPY: should find hash of album given a track name' do
-      type = 'tracks'
-      get "api/v0.1/#{type}/#{HAPPY_SEARCH_INPUT}"
-      last_response.status.must_equal 200
-      last_response.content_type.must_equal 'application/json'
-      search_data = JSON.parse(last_response.body)
-      search_data['tracks'].length.must_be :>, 0
+  describe 'Loading and saving a new track by ID' do
+    before do
+      DB[:searchs].delete
+      DB[:songs].delete
     end
 
-    it 'HAPPY: should find hash of album given a track name' do
-      type = 'albums'
-      get "api/v0.1/#{type}/#{HAPPY_SEARCH_INPUT}"
-      last_response.status.must_equal 200
-      last_response.content_type.must_equal 'application/json'
-      search_data = JSON.parse(last_response.body)
-      search_data['albums'].length.must_be :>, 0
-    end
-
-    it 'HAPPY: should find hash of artists given a track name' do
-      type = 'artists'
-      get "api/v0.1/#{type}/#{HAPPY_SEARCH_INPUT}"
+    it '(HAPPY) should load and save a new result of search by given input' do
+      post 'api/v0.1',
+           { song_name: HAPPY_SEARCH_INPUT }.to_json,
+           'CONTENT_TYPE' => 'application/json'
 
       last_response.status.must_equal 200
-      last_response.content_type.must_equal 'application/json'
-      search_data = JSON.parse(last_response.body)
-      search_data['artists'].length.must_be :>, 0
+      body = JSON.parse(last_response.body)
+      body.must_include 'input'
+      body.must_include 'search_id'
+
+      Search.count.must_equal 1
+      Song.count.must_be :>=, 1
     end
 
-    it 'HAPPY: should find hash of links given a track name' do
-      type = 'links'
-      get "api/v0.1/#{type}/#{HAPPY_SEARCH_INPUT}"
+    it '(BAD) should report error if given invalid input' do
+      post 'api/v0.1',
+           { song_name: SAD_SEARCH_INPUT }.to_json,
+           'CONTENT_TYPE' => 'application/json'
 
+      last_response.status.must_equal 400
+      last_response.body.must_include SAD_SEARCH_INPUT
+    end
+
+    it 'should report error if searching keyword already exists' do
+      2.times do
+        post 'api/v0.1',
+             { song_name: HAPPY_SEARCH_INPUT }.to_json,
+             'CONTENT_TYPE' => 'application/json'
+      end
+
+      last_response.status.must_equal 422
+    end
+  end
+
+  describe 'Request to update a search' do
+    after do
+      DB[:searchs].delete
+      DB[:songs].delete
+      post 'api/v0.1',
+           { song_name: HAPPY_SEARCH_INPUT }.to_json,
+           'CONTENT_TYPE' => 'application/json'
+    end
+
+    it '(HAPPY) should successfully update valid song' do
+      original = Song.count
+      put "api/v0.1/#{HAPPY_SEARCH_INPUT}"
       last_response.status.must_equal 200
-      last_response.content_type.must_equal 'application/json'
-      search_data = JSON.parse(last_response.body)
-      search_data['links'].length.must_be :>, 0
+      updated = Song.count
+      updated.must_be :>=, original
     end
 
-    it 'HAPPY: should find hash of images given a track name' do
-      type = 'images'
-      get "api/v0.1/#{type}/#{HAPPY_SEARCH_INPUT}"
-
-      last_response.status.must_equal 200
-      last_response.content_type.must_equal 'application/json'
-      search_data = JSON.parse(last_response.body)
-      search_data['images'].length.must_be :>, 0
-    end
-
-    it 'SAD: should report if no albums are found' do
-      type = 'tracks'
-      get "api/v0.1/#{type}/#{SAD_SEARCH_INPUT}"
-      search_data = JSON.parse(last_response.body)
-      search_data['albums'].is_a?(NilClass)
+    it '(BAD) should report error if given invalid search' do
+      put "api/v0.1/#{SAD_SEARCH_INPUT}"
+      last_response.status.must_equal 400
+      last_response.body.must_include SAD_POSTING_ID
     end
   end
 end
