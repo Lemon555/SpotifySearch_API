@@ -17,7 +17,7 @@ describe 'search specifications' do
     end
 
     it '(HAPPY) should load and save a new result of search by given input' do
-      post "api/v0.1/#{HAPPY_SEARCH_INPUT}".to_json,
+      post "api/v0.1/#{HAPPY_SEARCH_INPUT}",
            'CONTENT_TYPE' => 'application/json'
 
       last_response.status.must_equal 200
@@ -30,7 +30,7 @@ describe 'search specifications' do
     end
 
     it '(BAD) should report error if given invalid input' do
-      post "api/v0.1/#{SAD_SEARCH_INPUT}".to_json,
+      post "api/v0.1/#{SAD_SEARCH_INPUT}",
            'CONTENT_TYPE' => 'application/json'
 
       last_response.status.must_equal 400
@@ -39,7 +39,7 @@ describe 'search specifications' do
 
     it 'should report error if searching keyword already exists' do
       2.times do
-        post "api/v0.1/#{HAPPY_SEARCH_INPUT}".to_json,
+        post "api/v0.1/#{HAPPY_SEARCH_INPUT}",
              'CONTENT_TYPE' => 'application/json'
       end
 
@@ -78,7 +78,7 @@ describe 'search specifications' do
     after do
       DB[:searchs].delete
       DB[:songs].delete
-      post "api/v0.1/#{HAPPY_SEARCH_INPUT}".to_json,
+      post "api/v0.1/#{HAPPY_SEARCH_INPUT}",
            'CONTENT_TYPE' => 'application/json'
     end
 
