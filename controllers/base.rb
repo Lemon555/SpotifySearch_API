@@ -4,7 +4,7 @@
 class SpotifySearchAPI < Sinatra::Base
   extend Econfig::Shortcut
 
-  API_VER = 'api/v0.2'
+  API_VER = 'api/v0.1'
 
   configure do
     Econfig.env = settings.environment.to_s

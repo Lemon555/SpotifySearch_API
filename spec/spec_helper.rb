@@ -8,7 +8,6 @@ require 'vcr'
 require 'webmock'
 
 require './init.rb'
-require_relative '../app'
 
 include Rack::Test::Methods
 
