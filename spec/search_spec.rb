@@ -1,72 +1,77 @@
 # frozen_string_literal: true
 require_relative 'spec_helper'
 
-describe 'card specifications' do
-  SAD_SEARCH_INPUT = 'sdfghjk'
-  HAPPY_SEARCH_INPUT = 'Eyes+Shut'
-  type = ''
-
+describe 'search specifications' do
   before do
     VCR.insert_cassette CASSETTE_FILE, record: :new_episodes
   end
+
   after do
     VCR.eject_cassette
   end
 
-  describe 'Do a search' do
-    it 'HAPPY: should find hash of album given a track name' do
-      type = 'tracks'
-      get "api/v0.1/#{type}/#{HAPPY_SEARCH_INPUT}"
-      last_response.status.must_equal 200
-      last_response.content_type.must_equal 'application/json'
-      search_data = JSON.parse(last_response.body)
-      search_data['tracks'].is_a?(Hash)
+  describe 'Loading and saving a new track (Post)' do
+    before do
+      DB[:searches].delete
+      DB[:songs].delete
     end
 
-    it 'HAPPY: should find hash of album given a track name' do
-      type = 'albums'
-      get "api/v0.1/#{type}/#{HAPPY_SEARCH_INPUT}"
+    it '(HAPPY) should load and save a new result of search by given input' do
+      post "api/v0.1/#{HAPPY_SEARCH_INPUT}"
+
       last_response.status.must_equal 200
-      last_response.content_type.must_equal 'application/json'
-      search_data = JSON.parse(last_response.body)
-      search_data['albums'].is_a?(Hash)
+      body = JSON.parse(last_response.body)
+      body.must_include 'input'
+      body.must_include 'id'
+
+      Search.count.must_equal 1
+      Song.count.must_be :>=, 1
     end
 
-    it 'HAPPY: should find hash of artists given a track name' do
-      type = 'artists'
-      get "api/v0.1/#{type}/#{HAPPY_SEARCH_INPUT}"
+    it '(BAD) should report error if given invalid input' do
+      post "api/v0.1/#{SAD_SEARCH_INPUT}"
 
-      last_response.status.must_equal 200
-      last_response.content_type.must_equal 'application/json'
-      search_data = JSON.parse(last_response.body)
-      search_data['artists'].is_a?(Hash)
+      last_response.status.must_equal 400
+      last_response.body.must_include SAD_SEARCH_INPUT
     end
 
-    it 'HAPPY: should find hash of links given a track name' do
-      type = 'links'
-      get "api/v0.1/#{type}/#{HAPPY_SEARCH_INPUT}"
+    it 'should report error if searching keyword already exists' do
+      2.times do
+        post "api/v0.1/#{HAPPY_SEARCH_INPUT}"
+      end
 
+      last_response.status.must_equal 422
+    end
+  end
+
+  describe 'Find stored searches by input(GET)' do
+    before do
+      DB[:searches].delete
+      DB[:songs].delete
+      post "api/v0.1/#{HAPPY_SEARCH_INPUT}"
+    end
+
+    it 'HAPPY: should find a array of album given a track name' do
+      get "api/v0.1/#{HAPPY_SEARCH_INPUT}"
       last_response.status.must_equal 200
       last_response.content_type.must_equal 'application/json'
       search_data = JSON.parse(last_response.body)
-      search_data['links'].is_a?(Hash)
+      search_data.is_a?(Array)
+      search_data.length.must_be :>=, 1
     end
 
     it 'HAPPY: should find hash of images given a track name' do
-      type = 'images'
-      get "api/v0.1/#{type}/#{HAPPY_SEARCH_INPUT}"
-
+      get "api/v0.1/#{HAPPY_SEARCH_INPUT}"
       last_response.status.must_equal 200
       last_response.content_type.must_equal 'application/json'
       search_data = JSON.parse(last_response.body)
-      search_data['images'].is_a?(Hash)
+      search_data[1]['images'].is_a?(Array)
     end
 
     it 'SAD: should report if no albums are found' do
-      type = 'tracks'
-      get "api/v0.1/#{type}/#{SAD_SEARCH_INPUT}"
-      search_data = JSON.parse(last_response.body)
-      search_data['albums'].is_a?(NilClass)
+      get "api/v0.1/#{SAD_SEARCH_INPUT}"
+      last_response.status.must_equal 404
+      last_response.body.must_include SAD_SEARCH_INPUT
     end
   end
 end
