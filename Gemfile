@@ -6,6 +6,7 @@ gem 'sinatra'
 gem 'puma'
 gem 'json'
 gem 'econfig'
+gem 'rake'
 
 gem 'spotifysearch'
 gem 'sequel'
