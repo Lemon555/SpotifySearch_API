@@ -4,7 +4,7 @@ require 'sequel'
 Sequel.migration do
   change do
     create_table(:songs) do
-      primary_key :track_id
+      primary_key :id
       foreign_key :search_id
 
       String :track_name
