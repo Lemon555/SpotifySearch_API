@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Represents search results
 require_relative 'song'
 

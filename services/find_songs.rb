@@ -10,7 +10,7 @@ class FindSong
     if search
       Right(search)
     else
-      Left(Error.new(:not_found, 'Search not found'))
+      Left(Error.new(:not_found_in_DB, "#{params} not found"))
     end
   }
 

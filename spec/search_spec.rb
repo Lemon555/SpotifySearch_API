@@ -65,7 +65,7 @@ describe 'search specifications' do
       last_response.status.must_equal 200
       last_response.content_type.must_equal 'application/json'
       search_data = JSON.parse(last_response.body)
-      search_data[1]['images'].is_a?(Array)
+      search_data['songs'][1]['images'].is_a?(Array)
     end
 
     it 'SAD: should report if no albums are found' do

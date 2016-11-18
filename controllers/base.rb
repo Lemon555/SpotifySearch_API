@@ -11,7 +11,11 @@ class SpotifySearchAPI < Sinatra::Base
     Econfig.root = File.expand_path('..', settings.root)
   end
 
+  after do
+    content_type 'application/json'
+  end
+
   get '/?' do
-    "SpotifySearchAPI latest version endpoints are at: /#{API_VER}/"
+    "SpotifySearchAPI latest version endpoints are at: /#{API_VER}/".to_json
   end
 end

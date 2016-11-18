@@ -6,19 +6,24 @@ class LoadSongFromSpotify
   extend Dry::Container::Mixin
 
   register :retrieve_search_and_songs_data, lambda { |params|
-    if Search.find(params)
-      Left(Error.new(:cannot_process, 'Search already exist'))
+    if Search.find(input: params)
+      Left(Error.new(:already_exist, 'Search already exist'))
     else
       Right(input: params, search: Spotify::Search.find(params))
     end
   }
 
   register :create_search_and_songs, lambda { |params|
-    search = Search.create(input: params[:input])
-    params[:search].map do |_, track|
-      write_song(search, track)
+    if params[:search].length.positive?
+      search = Search.create(input: params[:input])
+      params[:search].map do |_, track|
+        write_song(search, track)
+      end
+      Right(search)
+    else
+      Left(Error.new(:not_found_on_Spotify,
+                     "#{params[:input]} not found on Spotify"))
     end
-    Right(search)
   }
 
   def self.call(params)
