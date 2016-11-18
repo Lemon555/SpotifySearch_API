@@ -9,16 +9,16 @@ class LoadSongFromSpotify
     if Search.find(params)
       Left(Error.new(:cannot_process, 'Search already exist'))
     else
-      Right(input: params, search: SpotifySearch::Search.find(params))
+      Right(input: params, search: Spotify::Search.find(params))
     end
   }
 
   register :create_search_and_songs, lambda { |params|
     search = Search.create(input: params[:input])
-    params[:search].map do |track|
+    params[:search].map do |_, track|
       write_song(search, track)
     end
-    Right(params[:search])
+    Right(search)
   }
 
   def self.call(params)

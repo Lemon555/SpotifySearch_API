@@ -4,7 +4,6 @@
 class SongRepresenter < Roar::Decorator
   include Roar::JSON
 
-  property :track_id
   property :search_id
   property :track_name
   property :artists

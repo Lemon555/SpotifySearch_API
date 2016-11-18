@@ -6,7 +6,7 @@ class SpotifySearchAPI < Sinatra::Base
     results = FindSong.call(params)
 
     if results.success?
-      SongRepresenter.new(results.value).to_json
+      SongsSearchResultsRepresenter.new(results.value).to_json
     else
       ErrorRepresenter.new(results.value).to_status_response
     end
@@ -15,8 +15,8 @@ class SpotifySearchAPI < Sinatra::Base
   post "/#{API_VER}/:song_name/?" do
     result = LoadSongFromSpotify.call(params)
 
-    if result.seccess?
-      SongRepresenter.new(result.value).to_json
+    if result.success?
+      SearchRepresenter.new(result.value).to_json
     else
       ErrorRepresenter.new(result.value).to_status_response
     end
