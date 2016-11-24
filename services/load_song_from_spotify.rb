@@ -16,8 +16,8 @@ class LoadSongFromSpotify
   register :create_search_and_songs, lambda { |params|
     if params[:search].length.positive?
       search = Search.create(input: params[:input])
-      params[:search].map do |_, track|
-        write_song(search, track)
+      params[:search].map do |key, track|
+        write_song(search, key, track)
       end
       Right(search)
     else
@@ -35,10 +35,11 @@ class LoadSongFromSpotify
 
   private_class_method
 
-  def self.write_song(search, track)
+  def self.write_song(search, key, track)
     search.add_song(
       search_id:    search.id,
       track_name:   track.track_name,
+      track_id:     key,
       link:         track.track_link,
       album:        track.album_name,
       artists:      track.artist_name.to_json,

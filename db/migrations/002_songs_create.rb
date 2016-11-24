@@ -8,6 +8,7 @@ Sequel.migration do
       foreign_key :search_id
 
       String :track_name
+      String :track_id
       String :artists
       String :album
       String :link
