@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# GroupAPI web service
+# SpotifySearchAPI web service
 class SpotifySearchAPI < Sinatra::Base
   get "/#{API_VER}/:song_name/?" do
     results = FindSong.call(params[:song_name])
