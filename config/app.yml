@@ -1,0 +1,6 @@
+---
+  development:
+    DB_KEY: 'Nvsvz2CTWzh7q1rvssE3mZxNVnm7L8qI4o6QuxuBD6I='
+
+  test:
+    DB_KEY: 'dHjGQHbeIG9P0Atl5rhiRrWAosZldXiX2fuBQd7coc0='

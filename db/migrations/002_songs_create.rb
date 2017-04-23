@@ -9,7 +9,7 @@ Sequel.migration do
 
       String :track_name
       String :track_id
-      String :artists
+      String :artists_secure
       String :album
       String :link
       String :images

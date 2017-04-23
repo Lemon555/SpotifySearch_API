@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
+require './init.rb'
 require 'rake/testtask'
+
+# Print current RACK_ENV it's using
+puts "Environment: #{ENV['RACK_ENV'] || 'development'}"
 
 task :default do
   puts `rake -T`

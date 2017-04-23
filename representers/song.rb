@@ -7,7 +7,7 @@ class SongRepresenter < Roar::Decorator
   property :search_id
   property :track_name
   property :track_id
-  property :artists
+  property :artists_secure
   property :album
   property :link
   property :images
