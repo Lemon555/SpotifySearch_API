@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rake/testtask'
 
 task :default do
@@ -60,7 +61,7 @@ namespace :quality do
   CODE = 'app.rb'
 
   desc 'run all quality checks'
-  task all: [:rubocop, :flog, :flay]
+  task all: %i[rubocop flog flay]
 
   task :flog do
     sh "flog #{CODE}"
@@ -72,5 +73,12 @@ namespace :quality do
 
   task :rubocop do
     sh 'rubocop'
+  end
+end
+
+namespace :crypto do
+  desc 'Create sample cryptographic key for database'
+  task :db_key do
+    puts "DB_KEY: #{SecureDB.generate_key}"
   end
 end

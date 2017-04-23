@@ -1,20 +1,22 @@
 # frozen_string_literal: true
+
 source 'https://rubygems.org'
 ruby '2.3.1'
 
-gem 'sinatra'
-gem 'puma'
-gem 'json'
 gem 'econfig'
+gem 'json'
+gem 'puma'
 gem 'rake'
+gem 'sinatra'
 
-gem 'spotifysearch'
-gem 'sequel'
-gem 'roar'
-gem 'multi_json'
-gem 'dry-monads'
 gem 'dry-container'
+gem 'dry-monads'
 gem 'dry-transaction'
+gem 'multi_json'
+gem 'rbnacl-libsodium'
+gem 'roar'
+gem 'sequel'
+gem 'spotifysearch'
 
 group :development, :test do
   gem 'sqlite3'
@@ -23,8 +25,8 @@ end
 group :development do
   gem 'rerun'
 
-  gem 'flog'
   gem 'flay'
+  gem 'flog'
 end
 
 group :test do
@@ -32,15 +34,14 @@ group :test do
   gem 'minitest-rg'
 
   gem 'rack-test'
-  gem 'rake'
 
   gem 'vcr'
   gem 'webmock'
 end
 
 group :development, :production do
-  gem 'tux'
   gem 'hirb'
+  gem 'tux'
 end
 
 group :production do
