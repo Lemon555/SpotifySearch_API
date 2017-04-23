@@ -4,4 +4,4 @@ spec/coverage/
 spec/fixtures/cassettes
 db/*.*
 .bundle/
-Gemfile.lock
+config/app.yml
